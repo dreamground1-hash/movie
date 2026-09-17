@@ -87,7 +87,7 @@ fig2 = px.treemap(
     title="장르 및 영화별 총 관객수 트리맵",
 )
 
-# 마우스 오버 툴팁 설정 (영화명 및 총 관객수)
+# 마우스 오버 툴팁 설정
 fig2.update_traces(
     hovertemplate="<b>%{label}</b><br>총 관객수: %{value:,}명",
 )
@@ -98,4 +98,41 @@ st.markdown("---")
 st.markdown("##### 💡 이 그래프로 알 수 있는 것")
 st.info(
     "장르 전체의 시장 규모뿐만 아니라, 특정 장르 내에서 어떤 영화가 관객수를 독점하거나 크게 견인했는지 흥행 기여도를 직관적으로 알 수 있습니다."
+)
+
+st.markdown("<br><br>", unsafe_allow_html=True)
+
+# ==============================================================================
+# 세 번째 그래프: 총 관객수(total_audi) 히스토그램
+# ==============================================================================
+st.subheader("3. 총 관객수 분포 히스토그램")
+
+# 히스토그램 생성
+fig3 = px.histogram(
+    df,
+    x="total_audi",
+    nbins=30,
+    title="영화별 총 관객수 분포",
+    labels={"total_audi": "총 관객수(명)", "count": "영화 수"},
+)
+
+fig3.update_traces(
+    hovertemplate="<b>관객수 구간:</b> %{x}명<br><b>영화 수:</b> %{y}편"
+)
+
+st.plotly_chart(fig3, use_container_width=True)
+
+# 데이터 분석값 계산 (최다 관객 영화, 관객 몰린 구간)
+max_movie = df.loc[df["total_audi"].idxmax()]
+top_movie_name = max_movie["movieNm"]
+top_movie_audi = int(max_movie["total_audi"])
+
+# 가장 밀집된 구간(하위 50% / 중앙값 기반) 계산
+median_audi = df["total_audi"].median()
+
+st.markdown("---")
+st.markdown("##### 💡 이 그래프로 알 수 있는 것")
+st.info(
+    f"대부분의 영화가 총 관객수 **{int(median_audi):,}명 이하**의 상대적으로 낮은 흥행 구간에 밀집되어 있는 반면, "
+    f"가장 많은 관객을 동원한 영화는 **'{top_movie_name}'** (총 {top_movie_audi:,}명)으로 극소수의 흥행 대작이 전체 관객수를 크게 견인하는 오른쪽 꼬리가 긴 분포를 보입니다."
 )
