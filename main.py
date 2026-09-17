@@ -22,13 +22,10 @@ def load_data():
     # 장르 열 전처리: '|' 기호로 구분된 복수 장르 중 첫 번째 장르만 추출
     df["genre"] = df["genre"].astype(str).str.split("|").str[0]
 
-    # 관객수 및 스크린수 데이터 숫자형 변환 및 결측치 처리
-    df["total_audi"] = pd.to_numeric(df["total_audi"], errors="coerce").fillna(
-        0
-    )
-    df["first_scrn"] = pd.to_numeric(df["first_scrn"], errors="coerce").fillna(
-        0
-    )
+    # 수치형 데이터 변환 및 결측치 처리
+    numeric_cols = ["total_audi", "first_scrn", "first_week_audi"]
+    for col in numeric_cols:
+        df[col] = pd.to_numeric(df[col], errors="coerce").fillna(0)
 
     # 트리맵 에러 방지: 장르와 영화명 기준 중복 제거/합산
     df_tree = (
@@ -185,14 +182,14 @@ st.subheader("5. 주요 장르별 총 관객수 분포 (박스플롯)")
 top_genres = df["genre"].value_counts()[lambda x: x >= 10].index
 df_top_genres = df[df["genre"].isin(top_genres)]
 
-# Plotly 박스플롯 생성 (hover_name으로 마우스 오버 시 영화명 표시)
+# Plotly 박스플롯 생성
 fig5 = px.box(
     df_top_genres,
     x="genre",
     y="total_audi",
     color="genre",
     hover_name="movieNm",
-    points="outliers",  # 이상치(외곽 점)만 표시
+    points="outliers",
     title="주요 장르별(10편 이상) 총 관객수 분포 및 이상치",
     labels={
         "genre": "장르",
@@ -200,7 +197,6 @@ fig5 = px.box(
     },
 )
 
-# 마우스 오버 툴팁 포맷 설정
 fig5.update_traces(
     hovertemplate="<b>%{hovertext}</b><br>장르: %{x}<br>관객수: %{y:,}명"
 )
@@ -212,4 +208,43 @@ st.markdown("##### 💡 이 그래프로 알 수 있는 것")
 st.info(
     "영화 편수가 10편 이상인 주요 장르 간의 중간 관객수 수준과 흥행 편차를 비교할 수 있으며, "
     "상자 밖으로 튀어나온 이상치 점을 통해 해당 장르 내에서 이례적으로 대흥행을 거둔 작품을 쉽게 파악할 수 있습니다."
+)
+
+st.markdown("<br><br>", unsafe_allow_html=True)
+
+# ==============================================================================
+# 여섯 번째 그래프: 스크린수 vs 총 관객수 (버블 차트 - 크기: 첫 주 관객수)
+# ==============================================================================
+st.subheader("6. 스크린수, 총 관객수 및 첫 주 관객수 (버블 차트)")
+
+# Plotly 버블 차트 생성 (size: first_week_audi)
+fig6 = px.scatter(
+    df,
+    x="first_scrn",
+    y="total_audi",
+    size="first_week_audi",
+    color="genre",
+    hover_name="movieNm",
+    size_max=45,  # 버블 최대 크기 조절
+    title="개봉일 스크린수 대 총 관객수 (버블 크기: 개봉 첫 주 관객수)",
+    labels={
+        "first_scrn": "개봉일 스크린수(개)",
+        "total_audi": "총 관객수(명)",
+        "first_week_audi": "첫 주 관객수(명)",
+        "genre": "장르",
+    },
+)
+
+# 마우스 오버 툴팁 설정
+fig6.update_traces(
+    hovertemplate="<b>%{hovertext}</b><br>개봉일 스크린수: %{x:,}개<br>총 관객수: %{y:,}명<br>첫 주 관객수: %{marker.size:,}명"
+)
+
+st.plotly_chart(fig6, use_container_width=True)
+
+st.markdown("---")
+st.markdown("##### 💡 이 그래프로 알 수 있는 것")
+st.info(
+    "스크린수와 총 관객수의 관계뿐만 아니라 버블의 크기(개봉 첫 주 관객수)를 통해, "
+    "개봉 초반 모멘텀이 끝까지 유지되어 최종 흥행으로 이어졌는지 혹은 입소문을 통한 장기 흥행이었는지를 종합적으로 분석할 수 있습니다."
 )
