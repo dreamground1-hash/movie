@@ -22,10 +22,22 @@ def load_data():
     # 장르 열 전처리: '|' 기호로 구분된 복수 장르 중 첫 번째 장르만 추출
     df["genre"] = df["genre"].astype(str).str.split("|").str[0]
 
-    return df
+    # 관객수 데이터 숫자형 변환 및 결측치 처리
+    df["total_audi"] = pd.to_numeric(df["total_audi"], errors="coerce").fillna(
+        0
+    )
+
+    # 트리맵 에러 방지: 장르와 영화명 기준 중복 제거/합산
+    df_tree = (
+        df.groupby(["genre", "movieNm"], as_index=False)["total_audi"]
+        .sum()
+        .query("total_audi > 0")
+    )
+
+    return df, df_tree
 
 
-df = load_data()
+df, df_tree = load_data()
 
 # ==============================================================================
 # 첫 번째 그래프: 장르별 영화 편수 (도넛 차트)
@@ -45,16 +57,14 @@ fig1 = px.pie(
     title="장르별 영화 비율",
 )
 
-# 툴팁(마우스 오버) 설정: 장르명, 편수, 비율 표시
+# 툴팁(마우스 오버) 설정
 fig1.update_traces(
     textinfo="percent+label",
     hovertemplate="<b>장르:</b> %{label}<br><b>편수:</b> %{value}편<br><b>비율:</b> %{percent}",
 )
 
-# 그래프 출력
 st.plotly_chart(fig1, use_container_width=True)
 
-# 구분선 및 해석 구역
 st.markdown("---")
 st.markdown("##### 💡 이 그래프로 알 수 있는 것")
 st.info(
@@ -68,24 +78,22 @@ st.markdown("<br><br>", unsafe_allow_html=True)
 # ==============================================================================
 st.subheader("2. 장르별 영화 계층 및 총 관객수")
 
-# Plotly 트리맵 생성 (계층: genre -> movieNm, 사각형 크기: total_audi)
+# 트리맵 생성 (정제된 df_tree 사용)
 fig2 = px.treemap(
-    df,
-    path=[px.Constant("전체 영화"), "genre", "movieNm"],
+    df_tree,
+    path=["genre", "movieNm"],
     values="total_audi",
     color="genre",
     title="장르 및 영화별 총 관객수 트리맵",
 )
 
-# 마우스 오버 툴팁 설정 (영화명 및 총 관객수 표시)
+# 마우스 오버 툴팁 설정 (영화명 및 총 관객수)
 fig2.update_traces(
     hovertemplate="<b>%{label}</b><br>총 관객수: %{value:,}명",
 )
 
-# 그래프 출력
 st.plotly_chart(fig2, use_container_width=True)
 
-# 구분선 및 해석 구역
 st.markdown("---")
 st.markdown("##### 💡 이 그래프로 알 수 있는 것")
 st.info(
