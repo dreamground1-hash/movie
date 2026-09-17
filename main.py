@@ -22,8 +22,11 @@ def load_data():
     # 장르 열 전처리: '|' 기호로 구분된 복수 장르 중 첫 번째 장르만 추출
     df["genre"] = df["genre"].astype(str).str.split("|").str[0]
 
-    # 관객수 데이터 숫자형 변환 및 결측치 처리
+    # 관객수 및 스크린수 데이터 숫자형 변환 및 결측치 처리
     df["total_audi"] = pd.to_numeric(df["total_audi"], errors="coerce").fillna(
+        0
+    )
+    df["first_scrn"] = pd.to_numeric(df["first_scrn"], errors="coerce").fillna(
         0
     )
 
@@ -126,8 +129,6 @@ st.plotly_chart(fig3, use_container_width=True)
 max_movie = df.loc[df["total_audi"].idxmax()]
 top_movie_name = max_movie["movieNm"]
 top_movie_audi = int(max_movie["total_audi"])
-
-# 가장 밀집된 구간(하위 50% / 중앙값 기반) 계산
 median_audi = df["total_audi"].median()
 
 st.markdown("---")
@@ -135,4 +136,40 @@ st.markdown("##### 💡 이 그래프로 알 수 있는 것")
 st.info(
     f"대부분의 영화가 총 관객수 **{int(median_audi):,}명 이하**의 상대적으로 낮은 흥행 구간에 밀집되어 있는 반면, "
     f"가장 많은 관객을 동원한 영화는 **'{top_movie_name}'** (총 {top_movie_audi:,}명)으로 극소수의 흥행 대작이 전체 관객수를 크게 견인하는 오른쪽 꼬리가 긴 분포를 보입니다."
+)
+
+st.markdown("<br><br>", unsafe_allow_html=True)
+
+# ==============================================================================
+# 네 번째 그래프: 개봉일 스크린수 vs 총 관객수 (산점도)
+# ==============================================================================
+st.subheader("4. 개봉일 스크린수와 총 관객수의 관계")
+
+# Plotly 산점도 생성 (x: first_scrn, y: total_audi, 색상: genre, hover_name: movieNm)
+fig4 = px.scatter(
+    df,
+    x="first_scrn",
+    y="total_audi",
+    color="genre",
+    hover_name="movieNm",
+    title="개봉일 스크린수 대 총 관객수 산점도",
+    labels={
+        "first_scrn": "개봉일 스크린수(개)",
+        "total_audi": "총 관객수(명)",
+        "genre": "장르",
+    },
+)
+
+# 마우스 오버 툴팁 포맷 설정
+fig4.update_traces(
+    hovertemplate="<b>%{hovertext}</b><br>개봉일 스크린수: %{x:,}개<br>총 관객수: %{y:,}명"
+)
+
+st.plotly_chart(fig4, use_container_width=True)
+
+st.markdown("---")
+st.markdown("##### 💡 이 그래프로 알 수 있는 것")
+st.info(
+    "개봉일 스크린수가 많을수록 대체로 총 관객수도 증가하는 양의 상관관계를 보여주며, "
+    "동시에 장르별로 개봉 초기 스크린 확보 수준과 흥행 성과의 분포 차이를 비교해 볼 수 있습니다."
 )
