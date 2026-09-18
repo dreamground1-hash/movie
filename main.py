@@ -33,6 +33,12 @@ def load_data():
     for col in numeric_cols:
         df[col] = pd.to_numeric(df[col], errors="coerce").fillna(0)
 
+    # 개봉월(Month) 추출 전처리
+    df["openDt"] = pd.to_datetime(df["openDt"].astype(str), errors="coerce")
+    df["open_month"] = (
+        df["openDt"].dt.month.fillna(0).astype(int).astype(str) + "월"
+    )
+
     # 트리맵 에러 방지: 장르와 영화명 기준 중복 제거/합산
     df_tree = (
         df.groupby(["genre", "movieNm"], as_index=False)["total_audi"]
@@ -258,32 +264,38 @@ st.info(
 st.markdown("<br><br>", unsafe_allow_html=True)
 
 # ==============================================================================
-# 8. 개봉 첫 날 상영을 많이 잡은 영화가 첫 주 흥행에 성공했을까 (나만의 질문)
+# 8. 영화가 개봉한 월에 따라 평균 관객수 차이가 클까 (나만의 질문)
 # ==============================================================================
-st.subheader("8. 개봉 첫 날 상영을 많이 잡은 영화가 첫 주 흥행에 성공했을까")
+st.subheader("8. 영화가 개봉한 월에 따라 평균 관객수 차이가 클까")
 
-fig8 = px.scatter(
-    df,
-    x="first_show",
-    y="first_week_audi",
-    color="genre",
-    hover_name="movieNm",
-    title="개봉 첫 날 상영을 많이 잡은 영화가 첫 주 흥행에 성공했을까",
-    labels={
-        "first_show": "개봉일 상영횟수(회)",
-        "first_week_audi": "개봉 첫 주 관객(명)",
-        "genre": "장르",
-    },
+# 개봉월별 평균 총 관객수 집계 (0월 제외 및 1월~12월 순서 정렬)
+df_valid_month = df[df["open_month"] != "0월"].copy()
+month_order = [f"{i}월" for i in range(1, 13)]
+
+df_month_audi = (
+    df_valid_month.groupby("open_month", as_index=False)["total_audi"]
+    .mean()
+    .rename(columns={"total_audi": "avg_total_audi"})
+)
+
+fig8 = px.bar(
+    df_month_audi,
+    x="open_month",
+    y="avg_total_audi",
+    category_orders={"open_month": month_order},
+    color="avg_total_audi",
+    color_continuous_scale="Blues",
+    title="영화가 개봉한 월에 따라 평균 관객수 차이가 클까",
+    labels={"open_month": "개봉월", "avg_total_audi": "평균 총 관객수(명)"},
 )
 
 fig8.update_traces(
-    hovertemplate="<b>%{hovertext}</b><br>개봉일 상영횟수: %{x:,}회<br>개봉 첫 주 관객: %{y:,}명"
+    hovertemplate="<b>%{x}</b><br>평균 총 관객수: %{y:,.0f}명"
 )
 
 st.plotly_chart(fig8, use_container_width=True)
 st.markdown("---")
 st.markdown("##### 💡 이 그래프로 알 수 있는 것")
 st.info(
-    "개봉 당일 상영횟수가 많은 영화일수록 개봉 첫 주 관객수도 대체로 높아지는 양의 상관관계를 보여줍니다. "
-    "또한 상영횟수 대비 관객 동원율이 상대적으로 높거나 낮았던 비정형적 흥행 영화도 찾아볼 수 있습니다."
+    "여름 성수기(7~8월)나 연말/겨울 시즌(12월) 등 특정 월에 개봉한 영화들의 평균 총 관객수가 높게 나타나는지 계절적 성수기 효과를 한눈에 확인할 수 있습니다."
 )
