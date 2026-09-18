@@ -74,9 +74,7 @@ fig1.update_traces(
 st.plotly_chart(fig1, use_container_width=True)
 st.markdown("---")
 st.markdown("##### 💡 이 그래프로 알 수 있는 것")
-st.info(
-    "박스오피스 상위권에 진입한 영화 중 특정 대표 장르(예: 드라마, 액션 등)가 차지하는 비중을 한눈에 비교할 수 있습니다."
-)
+st.info("")
 
 st.markdown("<br><br>", unsafe_allow_html=True)
 
@@ -97,9 +95,7 @@ fig2.update_traces(hovertemplate="<b>%{label}</b><br>총 관객수: %{value:,}�
 st.plotly_chart(fig2, use_container_width=True)
 st.markdown("---")
 st.markdown("##### 💡 이 그래프로 알 수 있는 것")
-st.info(
-    "장르 전체의 시장 규모뿐만 아니라, 특정 장르 내에서 어떤 영화가 관객수를 독점하거나 크게 견인했는지 흥행 기여도를 직관적으로 알 수 있습니다."
-)
+st.info("")
 
 st.markdown("<br><br>", unsafe_allow_html=True)
 
@@ -120,18 +116,9 @@ fig3.update_traces(
 )
 
 st.plotly_chart(fig3, use_container_width=True)
-
-max_movie = df.loc[df["total_audi"].idxmax()]
-top_movie_name = max_movie["movieNm"]
-top_movie_audi = int(max_movie["total_audi"])
-median_audi = df["total_audi"].median()
-
 st.markdown("---")
 st.markdown("##### 💡 이 그래프로 알 수 있는 것")
-st.info(
-    f"대부분의 영화가 총 관객수 **{int(median_audi):,}명 이하**의 상대적으로 낮은 흥행 구간에 밀집되어 있는 반면, "
-    f"가장 많은 관객을 동원한 영화는 **'{top_movie_name}'** (총 {top_movie_audi:,}명)으로 극소수의 흥행 대작이 전체 관객수를 크게 견인하는 오른쪽 꼬리가 긴 분포를 보입니다."
-)
+st.info("")
 
 st.markdown("<br><br>", unsafe_allow_html=True)
 
@@ -160,10 +147,7 @@ fig4.update_traces(
 st.plotly_chart(fig4, use_container_width=True)
 st.markdown("---")
 st.markdown("##### 💡 이 그래프로 알 수 있는 것")
-st.info(
-    "개봉일 스크린수가 많을수록 대체로 총 관객수도 증가하는 양의 상관관계를 보여주며, "
-    "동시에 장르별로 개봉 초기 스크린 확보 수준과 흥행 성과의 분포 차이를 비교해 볼 수 있습니다."
-)
+st.info("")
 
 st.markdown("<br><br>", unsafe_allow_html=True)
 
@@ -192,10 +176,7 @@ fig5.update_traces(
 st.plotly_chart(fig5, use_container_width=True)
 st.markdown("---")
 st.markdown("##### 💡 이 그래프로 알 수 있는 것")
-st.info(
-    "영화 편수가 10편 이상인 주요 장르 간의 중간 관객수 수준과 흥행 편차를 비교할 수 있으며, "
-    "상자 밖으로 튀어나온 이상치 점을 통해 해당 장르 내에서 이례적으로 대흥행을 거둔 작품을 쉽게 파악할 수 있습니다."
-)
+st.info("")
 
 st.markdown("<br><br>", unsafe_allow_html=True)
 
@@ -227,10 +208,7 @@ fig6.update_traces(
 st.plotly_chart(fig6, use_container_width=True)
 st.markdown("---")
 st.markdown("##### 💡 이 그래프로 알 수 있는 것")
-st.info(
-    "스크린수와 총 관객수의 관계뿐만 아니라 버블의 크기(개봉 첫 주 관객수)를 통해, "
-    "개봉 초반 모멘텀이 끝까지 유지되어 최종 흥행으로 이어졌는지 혹은 입소문을 통한 장기 흥행이었는지를 종합적으로 분석할 수 있습니다."
-)
+st.info("")
 
 st.markdown("<br><br>", unsafe_allow_html=True)
 
@@ -257,9 +235,7 @@ fig7.update_traces(
 st.plotly_chart(fig7, use_container_width=True)
 st.markdown("---")
 st.markdown("##### 💡 이 그래프로 알 수 있는 것")
-st.info(
-    "주요 제작 국가별 영화 점유율과 함께, 각 국가 내부에서 주로 제작되거나 흥행한 대표 장르의 구성 비중을 동심원 구조로 직관적으로 파악할 수 있습니다."
-)
+st.info("")
 
 st.markdown("<br><br>", unsafe_allow_html=True)
 
@@ -296,6 +272,4 @@ fig8.update_traces(
 st.plotly_chart(fig8, use_container_width=True)
 st.markdown("---")
 st.markdown("##### 💡 이 그래프로 알 수 있는 것")
-st.info(
-    "여름 성수기(7~8월)나 연말/겨울 시즌(12월) 등 특정 월에 개봉한 영화들의 평균 총 관객수가 높게 나타나는지 계절적 성수기 효과를 한눈에 확인할 수 있습니다."
-)
+st.info("")
