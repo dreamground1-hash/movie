@@ -74,7 +74,7 @@ fig1.update_traces(
 st.plotly_chart(fig1, use_container_width=True)
 st.markdown("---")
 st.markdown("##### 💡 이 그래프로 알 수 있는 것")
-st.info("")
+st.info("드라마나 액션 같은 특정 인기 장르가 전체 영화의 대부분을 차지함.")
 
 st.markdown("<br><br>", unsafe_allow_html=True)
 
@@ -95,7 +95,7 @@ fig2.update_traces(hovertemplate="<b>%{label}</b><br>총 관객수: %{value:,}�
 st.plotly_chart(fig2, use_container_width=True)
 st.markdown("---")
 st.markdown("##### 💡 이 그래프로 알 수 있는 것")
-st.info("")
+st.info("장르 전체 규모랑 그 장르를 혼자 하드캐리한 대박 영화가 뭔지 바로 보임.")
 
 st.markdown("<br><br>", unsafe_allow_html=True)
 
@@ -118,7 +118,9 @@ fig3.update_traces(
 st.plotly_chart(fig3, use_container_width=True)
 st.markdown("---")
 st.markdown("##### 💡 이 그래프로 알 수 있는 것")
-st.info("")
+st.info(
+    "대부분 영화는 관객수가 적고, 1,000만 급 대작 몇 편이 전체 관객수를 다 끌어올림."
+)
 
 st.markdown("<br><br>", unsafe_allow_html=True)
 
@@ -147,7 +149,7 @@ fig4.update_traces(
 st.plotly_chart(fig4, use_container_width=True)
 st.markdown("---")
 st.markdown("##### 💡 이 그래프로 알 수 있는 것")
-st.info("")
+st.info("개봉 첫날 스크린을 많이 잡은 영화일수록 총 관객수도 확실히 높은 편임.")
 
 st.markdown("<br><br>", unsafe_allow_html=True)
 
@@ -176,7 +178,9 @@ fig5.update_traces(
 st.plotly_chart(fig5, use_container_width=True)
 st.markdown("---")
 st.markdown("##### 💡 이 그래프로 알 수 있는 것")
-st.info("")
+st.info(
+    "장르별 평균 성적과 함께 혼자 위로 확 튀어 오른 대흥행작들을 한눈에 볼 수 있음."
+)
 
 st.markdown("<br><br>", unsafe_allow_html=True)
 
@@ -208,7 +212,9 @@ fig6.update_traces(
 st.plotly_chart(fig6, use_container_width=True)
 st.markdown("---")
 st.markdown("##### 💡 이 그래프로 알 수 있는 것")
-st.info("")
+st.info(
+    "첫 주 기세로 끝까지 간 영화랑 스크린은 적었지만 입소문으로 롱런한 영화가 딱 구분됨."
+)
 
 st.markdown("<br><br>", unsafe_allow_html=True)
 
@@ -235,7 +241,7 @@ fig7.update_traces(
 st.plotly_chart(fig7, use_container_width=True)
 st.markdown("---")
 st.markdown("##### 💡 이 그래프로 알 수 있는 것")
-st.info("")
+st.info("어느 나라 영화가 많은지, 국가별로 주로 어떤 장르를 만들었는지 잘 보임.")
 
 st.markdown("<br><br>", unsafe_allow_html=True)
 
@@ -272,4 +278,6 @@ fig8.update_traces(
 st.plotly_chart(fig8, use_container_width=True)
 st.markdown("---")
 st.markdown("##### 💡 이 그래프로 알 수 있는 것")
-st.info("")
+st.info(
+    "7~8월 여름방학이나 12월 연말 같은 성수기에 개봉해야 평균 관객수가 확실히 높음."
+)
